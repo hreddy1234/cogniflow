@@ -1,5 +1,5 @@
 # cogniflow
-Cogniflow improves student efficiency by using AI to personalize learning, track progress, and identify knowledge gaps in real time. It helps students study smarter by giving targeted practice, reducing revision time, and focusing only on topics they struggle.
+Cogniflow improves student efficiency by using AI to personalize learning, track progress, and identify knowledge gaps in real time. It helps students study smarter by giving targeted practice, reducing revision time, and focusing only on topics they struggle.  
 Many students suffer from 'The Illusion of Competence,' where they spend 10+ hours studying but retain less than 20% of the material due to cognitive fatigue and passive learning. Current tools only track time (how long you study) or performance (what you score), but never the correlation between the two. This disconnect leads to burnout, inefficient schedule planning, and poor academic outcomes despite high effort. Students need a way to identify their 'Cognitive Ceiling'—the point where extra study hours become counterproductive.
 
 Who It's For
