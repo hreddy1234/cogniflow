@@ -21,7 +21,8 @@ load_dotenv()
 api_key = os.getenv("API_KEY")
 
 # Create client using API key
-client = Groq(api_key="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")
+client = Groq(api_key=api_key)
+
 
 # Test print
 print(api_key)
