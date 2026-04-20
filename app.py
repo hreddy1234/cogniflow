@@ -1275,3 +1275,4 @@ elif page == "📊 Dashboard":
                 st.subheader("🎯 Personalized Study Plan")
                 for step in study_plan(df):
                     st.write("•", step)
+st.warning("Disclaimer: This Streamlit app may occasionally produce inaccurate or incomplete results and should not be solely relied upon for critical decisions.")
