@@ -21,8 +21,7 @@ load_dotenv()
 api_key = os.getenv("API_KEY")
 
 # Create client using API key
-client = Groq(api_key=st.secrets["GROQ_API_KEY"])
-
+client = Groq(api_key=api_key)
 
 # Test print
 print(api_key)
@@ -594,42 +593,222 @@ elif page == "📊 Dashboard":
     # TAB 2
     # ==========================================
     with tabs[1]:
-        fig1 = px.line(df, x=date_col, y="retention")
-        plot(fig1, "eff_line")
+            st.markdown("## 📊 Learning Efficiency ")
 
-        fig2 = px.area(df, x=date_col, y="study_hours")
-        plot(fig2, "eff_area")
-        
-        st.success("""
-    🧠 **Smart Insight: Effort vs Learning**
+            col1, col2 = st.columns(2)
 
-    - Studying more does NOT always mean learning more  
-    - Compare both graphs:
-    • If study hours ↑ but retention ↓ → 🚨 Inefficient learning  
-    • If both ↑ → 🚀 Optimal learning  
-    • If hours ↑ but retention flat → ⚠️ Passive learning issue  
+            # ==============================
+            # RETENTION TREND (ADVANCED LINE)
+            # ==============================
+            with col1:
+                fig1 = px.line(
+                    df,
+                    x=date_col,
+                    y="retention",
+                    markers=True,
+                    title="📈 Retention Trend Over Time",
+                )
 
-    💡 Focus on improving retention, not just increasing study time.
-    """)
+                fig1.update_traces(
+                    line=dict(width=3, shape="spline"),
+                    marker=dict(size=8)
+                )
+
+                fig1.update_layout(
+                    template="plotly_dark",
+                    hovermode="x unified",
+                    xaxis_title="Date",
+                    yaxis_title="Retention %",
+                    title_x=0.5,
+                    height=400,
+                )
+
+                st.plotly_chart(fig1, use_container_width=True)
+
+            # ==============================
+            # STUDY HOURS (ADVANCED AREA)
+            # ==============================
+            with col2:
+                fig2 = px.area(
+                    df,
+                    x=date_col,
+                    y="study_hours",
+                    title="⏳ Study Hours Distribution",
+                )
+
+                fig2.update_traces(
+                    line=dict(width=2),
+                )
+
+                fig2.update_layout(
+                    template="plotly_dark",
+                    hovermode="x unified",
+                    xaxis_title="Date",
+                    yaxis_title="Hours",
+                    title_x=0.5,
+                    height=400,
+                )
+
+                st.plotly_chart(fig2, use_container_width=True)
+
+
+            # ==============================
+            # BONUS: INTERACTIVE FILTER
+            # ==============================
+            st.markdown("### 🎯 Filter Data")
+
+            selected_range = st.slider(
+                "Select Retention Range",
+                float(df["retention"].min()),
+                float(df["retention"].max()),
+                (float(df["retention"].min()), float(df["retention"].max()))
+            )
+
+            filtered_df = df[
+                (df["retention"] >= selected_range[0]) &
+                (df["retention"] <= selected_range[1])
+            ]
+
+            fig3 = px.scatter(
+                filtered_df,
+                x="study_hours",
+                y="retention",
+                size="retention",
+                color="retention",
+                title="🎯 Retention vs Study Hours"
+            )
+
+            fig3.update_layout(template="plotly_dark", height=500)
+
+            st.plotly_chart(fig3, use_container_width=True)
+            st.success("""
+            🧠 **Smart Insight: Effort vs Learning**
+
+            - Studying more does NOT always mean learning more  
+            - Compare both graphs:
+            • If study hours ↑ but retention ↓ → 🚨 Inefficient learning  
+            • If both ↑ → 🚀 Optimal learning  
+            • If hours ↑ but retention flat → ⚠️ Passive learning issue  
+
+            💡 Focus on improving retention, not just increasing study time.
+            """)
     # ==========================================
     # TAB 3
     # ==========================================
     with tabs[2]:
-        fig1 = px.pie(df, names="strategytype")
-        plot(fig1, "behavior_pie")
-
-        fig2 = px.box(df, x="strategytype", y="retention")
-        plot(fig2, "behavior_box")
     
-        st.success("""
-    🧠 **Smart Insight: Learning Behavior Analysis**
+            st.markdown("## 🧠 Learning Behavior Analysis")
 
-    - If Passive dominates + low retention → 🚨 Ineffective study pattern  
-    - If Active dominates + high retention → 🚀 Strong learning strategy  
-    - If both similar but retention low → ⚠️ Need better techniques  
+            col1, col2 = st.columns(2)
 
-    💡 Learning is not about consuming content — it's about engaging with it.
-    """)
+            # ==============================
+            # ADVANCED PIE (DONUT STYLE)
+            # ==============================
+            with col1:
+                fig1 = px.pie(
+                    df,
+                    names="strategytype",
+                    title="🎯 Strategy Distribution"
+                )
+
+                fig1.update_traces(
+                    textinfo="percent+label",
+                    pull=[0.05]*len(df["strategytype"].unique()),  # slight pop-out
+                    hole=0.5  # makes it donut
+                )
+
+                fig1.update_layout(
+                    template="plotly_dark",
+                    title_x=0.5,
+                    showlegend=True,
+                    height=400
+                )
+
+                st.plotly_chart(fig1, use_container_width=True)
+
+            # ==============================
+            # ADVANCED BOX PLOT
+            # ==============================
+            with col2:
+                fig2 = px.box(
+                    df,
+                    x="strategytype",
+                    y="retention",
+                    color="strategytype",
+                    title="📊 Retention Spread by Strategy",
+                    points="all"  # show all data points
+                )
+
+                fig2.update_traces(
+                    jitter=0.4,
+                    marker=dict(size=6, opacity=0.6)
+                )
+
+                fig2.update_layout(
+                    template="plotly_dark",
+                    title_x=0.5,
+                    xaxis_title="Strategy Type",
+                    yaxis_title="Retention %",
+                    height=400,
+                    showlegend=False
+                )
+
+                st.plotly_chart(fig2, use_container_width=True)
+
+            # ==============================
+            # KPI INSIGHTS
+            # ==============================
+            st.markdown("### 📌 Behavioral Insights")
+
+            top_strategy = df.groupby("strategytype")["retention"].mean().idxmax()
+            worst_strategy = df.groupby("strategytype")["retention"].mean().idxmin()
+
+            k1, k2, k3 = st.columns(3)
+
+            k1.metric("🏆 Best Strategy", top_strategy)
+            k2.metric("⚠️ Needs Improvement", worst_strategy)
+            k3.metric("📊 Avg Retention", f"{df['retention'].mean():.2f}%")
+
+            # ==============================
+            # INTERACTIVE FILTER
+            # ==============================
+            st.markdown("### 🎛️ Filter by Strategy")
+
+            selected_strategy = st.multiselect(
+                "Choose Strategy Type",
+                options=df["strategytype"].unique(),
+                default=list(df["strategytype"].unique())
+            )
+
+            filtered_df = df[df["strategytype"].isin(selected_strategy)]
+
+            fig3 = px.violin(
+                filtered_df,
+                x="strategytype",
+                y="retention",
+                color="strategytype",
+                box=True,
+                points="all",
+                title="🎻 Retention Distribution (Detailed View)"
+            )
+
+            fig3.update_layout(
+                template="plotly_dark",
+                height=500,
+                title_x=0.5,
+                showlegend=False
+            )
+
+            st.plotly_chart(fig3, use_container_width=True)
+            st.success("""
+            🧠 **Smart Insight: Learning Behavior Analysis**
+
+            - If Passive dominates + low retention → 🚨 Ineffective study pattern  
+            - If Active dominates + high retention → 🚀 Strong learning strategy  
+            - If both similar but retention low → ⚠️ Need better techniques  
+
+            💡 Learning is not about consuming content — it's about engaging with it.
+            """)
     # ==========================================
     # TAB 4 (🔥 BURNOUT ENGINE — FULL SUMMARY)
     # ==========================================
@@ -768,13 +947,131 @@ elif page == "📊 Dashboard":
     # ==========================================
     # TAB 5
     # ==========================================
-    with tabs[4]:
-        st.dataframe(df.head(100), use_container_width=True)
+        with tabs[4]:
+            st.markdown("## 🔍 Deep Data Explorer")
 
-        if "methodname" in df.columns:
-            fig = px.bar(df, x="methodname", y="retention")
-            plot(fig, "deep_bar")
+            # ==============================
+            # SMART FILTERS
+            # ==============================
+            st.markdown("### 🎛️ Filter Data")
 
+            col1, col2 = st.columns(2)
+
+            with col1:
+                if "methodname" in df.columns:
+                    methods = st.multiselect(
+                        "Select Method",
+                        options=df["methodname"].unique(),
+                        default=list(df["methodname"].unique())
+                    )
+                else:
+                    methods = None
+
+            with col2:
+                if "retention" in df.columns:
+                    retention_range = st.slider(
+                        "Retention Range",
+                        float(df["retention"].min()),
+                        float(df["retention"].max()),
+                        (float(df["retention"].min()), float(df["retention"].max()))
+                    )
+                else:
+                    retention_range = None
+
+            # Apply filters
+            filtered_df = df.copy()
+
+            if methods:
+                filtered_df = filtered_df[filtered_df["methodname"].isin(methods)]
+
+            if retention_range:
+                filtered_df = filtered_df[
+                    (filtered_df["retention"] >= retention_range[0]) &
+                    (filtered_df["retention"] <= retention_range[1])
+                ]
+
+            # ==============================
+            # KPI SUMMARY
+            # ==============================
+            st.markdown("### 📊 Summary Metrics")
+
+            k1, k2, k3 = st.columns(3)
+
+            k1.metric("📄 Records", len(filtered_df))
+            k2.metric("📈 Avg Retention", f"{filtered_df['retention'].mean():.2f}%")
+            k3.metric("🔥 Max Retention", f"{filtered_df['retention'].max():.2f}%")
+
+            # ==============================
+            # ADVANCED TABLE
+            # ==============================
+            st.markdown("### 📋 Data Preview")
+
+            st.dataframe(
+                filtered_df.head(100),
+                use_container_width=True,
+                height=350
+            )
+
+            # ==============================
+            # ADVANCED BAR CHART
+            # ==============================
+            if "methodname" in filtered_df.columns:
+                st.markdown("### 📊 Retention by Method")
+
+                agg_df = (
+                    filtered_df
+                    .groupby("methodname")["retention"]
+                    .mean()
+                    .reset_index()
+                    .sort_values(by="retention", ascending=False)
+                )
+
+                fig = px.bar(
+                    agg_df,
+                    x="methodname",
+                    y="retention",
+                    color="retention",
+                    text_auto=".2f",
+                    title="📈 Average Retention per Method"
+                )
+
+                fig.update_layout(
+                    template="plotly_dark",
+                    title_x=0.5,
+                    xaxis_title="Method",
+                    yaxis_title="Retention %",
+                    height=450
+                )
+
+                st.plotly_chart(fig, use_container_width=True)
+
+            # ==============================
+            # BONUS: HEATMAP (ADVANCED INSIGHT)
+            # ==============================
+            if "methodname" in filtered_df.columns and "strategytype" in filtered_df.columns:
+                st.markdown("### 🔥 Method vs Strategy Impact")
+
+                heat_df = filtered_df.pivot_table(
+                    index="methodname",
+                    columns="strategytype",
+                    values="retention",
+                    aggfunc="mean"
+                )
+
+                fig2 = px.imshow(
+                    heat_df,
+                    text_auto=True,
+                    aspect="auto",
+                    title="📊 Retention Heatmap"
+                )
+
+                fig2.update_layout(
+                    template="plotly_dark",
+                    height=500,
+                    title_x=0.5
+                )
+
+                st.plotly_chart(fig2, use_container_width=True)
     # ==========================================
     # TAB 6 (AI)
     # ==========================================
