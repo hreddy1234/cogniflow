@@ -1131,6 +1131,9 @@ elif page == "📊 Dashboard":
             # ------------------------------------------
             # SESSION STATE
             # ------------------------------------------
+            if "full_text" not in st.session_state:
+                st.session_state["full_text"] = ""
+                
             if "ai_output" not in st.session_state:
                 st.session_state.ai_output = {}
 
@@ -1221,8 +1224,8 @@ elif page == "📊 Dashboard":
             if st.button("🚀 Generate Analysis"):
 
                 with st.spinner("Analyzing..."):
-                    st.session_state.full_text = generate_ai_insights(df)
-            
+                   st.session_state["full_text"] = generate_ai_insights(df)
+                    
             sections = {
                 "problems": "",
                 "insights": "",
@@ -1232,7 +1235,7 @@ elif page == "📊 Dashboard":
             
             current = None
             
-            full_text = st.session_state.full_text  # ✅ always exists
+            full_text = st.session_state.get("full_text", "")
             
             if full_text:  # ✅ prevents crash
                 for line in full_text.split("\n"):
