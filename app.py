@@ -1314,14 +1314,15 @@ elif page == "📊 Dashboard":
                 """, unsafe_allow_html=True)
 
             adv_text = data.get("advice", "").strip()
-            if st.button("🎯 Show Final Advice"):
-                    st.session_state.show_advice = True
 
-            if adv_text:
+            if st.button("🎯 Show Final Advice"):
+                st.session_state.show_advice = True
+            
+            if st.session_state.show_advice and adv_text:
                 st.markdown("### 🎯 Final Advice")
                 st.markdown(f"""
                 <div style="background:#064e3b;padding:15px;border-radius:10px;">
-                {format_points(data.get('advice',''))}
+                {format_points(adv_text)}
                 </div>
                 """, unsafe_allow_html=True)
 
