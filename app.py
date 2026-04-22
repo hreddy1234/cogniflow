@@ -1199,12 +1199,21 @@ elif page == "📊 Dashboard":
 
             ----------------------------------------
             VERY IMPORTANT:
-            Use EXACT section headers:
-
+            Always include ALL sections even if empty.
+            
+            Use EXACT format:
+            
             PROBLEM:
+            - point
+            
             INSIGHTS:
+            - point
+            
             RECOMMENDATIONS:
+            - point
+            
             ADVICE:
+            - point
                 """
 
                 try:
@@ -1290,7 +1299,7 @@ elif page == "📊 Dashboard":
                         </div>
                         """, unsafe_allow_html=True)
 
-            if data.get("problems"):
+            if data.get("recommendations"):
                 if st.button("📌 Show Recommendations"):
                     st.session_state.show_rec = True
 
