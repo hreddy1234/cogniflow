@@ -1253,6 +1253,8 @@ elif page == "📊 Dashboard":
             
                 if current and line.strip():
                     sections[current] += line.strip() + "\n"
+
+                
                 st.session_state.ai_output = sections
 
             # ------------------------------------------
