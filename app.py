@@ -1314,7 +1314,7 @@ elif page == "📊 Dashboard":
                 """, unsafe_allow_html=True)
 
             adv_text = data.get("advice", "").strip()
-                if st.button("🎯 Show Final Advice"):
+            if st.button("🎯 Show Final Advice"):
                     st.session_state.show_advice = True
 
             if adv_text:
