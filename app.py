@@ -1316,8 +1316,9 @@ elif page == "📊 Dashboard":
             if data.get("advice", "").strip():
                 if st.button("🎯 Show Final Advice"):
                     st.session_state.show_advice = True
+            adv_text = data.get("advice", "").strip()
 
-            if st.session_state.show_advice:
+            if adv_text:
                 st.markdown("### 🎯 Final Advice")
                 st.markdown(f"""
                 <div style="background:#064e3b;padding:15px;border-radius:10px;">
