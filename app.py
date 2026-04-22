@@ -1221,8 +1221,8 @@ elif page == "📊 Dashboard":
             if st.button("🚀 Generate Analysis"):
 
                 with st.spinner("Analyzing..."):
-                    full_text = generate_ai_insights(df)
-
+                    st.session_state.full_text = generate_ai_insights(df)
+            
             sections = {
                 "problems": "",
                 "insights": "",
@@ -1232,30 +1232,33 @@ elif page == "📊 Dashboard":
             
             current = None
             
-            for line in full_text.split("\n"):
-                line_clean = line.strip().upper()
+            full_text = st.session_state.full_text  # ✅ always exists
             
-                if "PROBLEM" in line_clean:
-                    current = "problems"
-                    continue
+            if full_text:  # ✅ prevents crash
+                for line in full_text.split("\n"):
+                    line_clean = line.strip().upper()
             
-                elif "INSIGHT" in line_clean:
-                    current = "insights"
-                    continue
+                    if "PROBLEM" in line_clean:
+                        current = "problems"
+                        continue
             
-                elif "RECOMMEND" in line_clean:
-                    current = "recommendations"
-                    continue
+                    elif "INSIGHT" in line_clean:
+                        current = "insights"
+                        continue
             
-                elif "ADVICE" in line_clean:
-                    current = "advice"
-                    continue
+                    elif "RECOMMEND" in line_clean:
+                        current = "recommendations"
+                        continue
             
-                if current and line.strip():
-                    sections[current] += line.strip() + "\n"
-
-                
+                    elif "ADVICE" in line_clean:
+                        current = "advice"
+                        continue
+            
+                    if current and line.strip():
+                        sections[current] += line.strip() + "\n"
+            
                 st.session_state.ai_output = sections
+                
 
             # ------------------------------------------
             # DISPLAY
