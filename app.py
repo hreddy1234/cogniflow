@@ -1291,7 +1291,9 @@ elif page == "📊 Dashboard":
                         """, unsafe_allow_html=True)
 
                 with col2:
-                    if data.get("insights"):
+                    ins_text = data.get("insights", "").strip()
+                    
+                    if ins_text:
                         st.markdown("### 🔍 Insights")
                         st.markdown(f"""
                         <div style="background:#1e3a8a;padding:15px;border-radius:10px;">
@@ -1311,7 +1313,7 @@ elif page == "📊 Dashboard":
                 </div>
                 """, unsafe_allow_html=True)
 
-            if st.session_state.show_rec:
+            if data.get("advice", "").strip():
                 if st.button("🎯 Show Final Advice"):
                     st.session_state.show_advice = True
 
