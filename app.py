@@ -1223,28 +1223,36 @@ elif page == "📊 Dashboard":
                 with st.spinner("Analyzing..."):
                     full_text = generate_ai_insights(df)
 
-                sections = {
-                    "problems": "",
-                    "insights": "",
-                    "recommendations": "",
-                    "advice": ""
-                }
-
-                current = None
-                for line in full_text.split("\n"):
-                    line = line.strip()
-
-                    if "PROBLEMS" in line.upper():
-                        current = "problems"
-                    elif "INSIGHTS" in line.upper():
-                        current = "insights"
-                    elif "RECOMMENDATIONS" in line.upper():
-                        current = "recommendations"
-                    elif "ADVICE" in line.upper():
-                        current = "advice"
-                    elif current:
-                        sections[current] += line + "\n"
-
+               sections = {
+                "problems": "",
+                "insights": "",
+                "recommendations": "",
+                "advice": ""
+            }
+            
+            current = None
+            
+            for line in full_text.split("\n"):
+                line_clean = line.strip().upper()
+            
+                if "PROBLEM" in line_clean:
+                    current = "problems"
+                    continue
+            
+                elif "INSIGHT" in line_clean:
+                    current = "insights"
+                    continue
+            
+                elif "RECOMMEND" in line_clean:
+                    current = "recommendations"
+                    continue
+            
+                elif "ADVICE" in line_clean:
+                    current = "advice"
+                    continue
+            
+                if current and line.strip():
+                    sections[current] += line.strip() + "\n"
                 st.session_state.ai_output = sections
 
             # ------------------------------------------
