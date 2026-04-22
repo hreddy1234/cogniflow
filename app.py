@@ -1223,7 +1223,7 @@ elif page == "📊 Dashboard":
                 with st.spinner("Analyzing..."):
                     full_text = generate_ai_insights(df)
 
-               sections = {
+            sections = {
                 "problems": "",
                 "insights": "",
                 "recommendations": "",
