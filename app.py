@@ -1148,34 +1148,60 @@ elif page == "📊 Dashboard":
                 ret = round(df["retention"].mean() * 100, 2)
                 hours = round(df["study_hours"].sum(), 2)
                 rph = round(ret / hours, 2) if hours else 0
+                avg_session = round(df["study_hours"].mean(), 2)
 
                 active_ratio = 0
+                passive_hours = 0
                 if "strategytype" in df.columns:
                     active_hours = df[df["strategytype"] == "Active"]["study_hours"].sum()
+                    passive_hours = df[df["strategytype"] == "Passive"]["study_hours"].sum()
                     active_ratio = round((active_hours / hours) * 100, 2) if hours else 0
 
+                burnout_score = round(((df["study_hours"] * 10) + ((1 - df["retention"]) * 50)).mean(), 2)
+
+                top_strategy = "N/A"
+                worst_strategy = "N/A"
+                if "strategytype" in df.columns:
+                    top_strategy = df.groupby("strategytype")["retention"].mean().idxmax()
+                    worst_strategy = df.groupby("strategytype")["retention"].mean().idxmin()
+
+                peak_hour = "N/A"
+                if "hour" in df.columns:
+                    peak_hour = df.groupby("hour")["retention"].mean().idxmax()
+
+                subject = df["subject"].iloc[0] if "subject" in df.columns else "General"
+
+                consistency = round(df["rph"].std(), 2) if "rph" in df.columns else 0
+
                 prompt = f"""
-                You are an expert in learning science.
+                You are an expert Learning Scientist and Cognitive Performance Analyst.
 
-                Analyze this student data:
-                Retention: {ret}%
-                Study Hours: {hours}
-                RPH: {rph}
-                Active Learning Ratio: {active_ratio}%
+            Speak like a human mentor. Be sharp, insightful, and practical.
 
-                STRICT FORMAT:
+            ----------------------------------------
+            DATA SUMMARY
+            ----------------------------------------
+            Subject: {subject}
+            Retention: {ret}%
+            Study Hours: {hours}
+            Efficiency (RPH): {rph}
+            Avg Session Length: {avg_session}
+            Active %: {active_ratio}
+            Passive Hours: {passive_hours}
+            Burnout Score: {burnout_score}
+            Best Strategy: {top_strategy}
+            Worst Strategy: {worst_strategy}
+            Peak Hour: {peak_hour}
+            Consistency: {consistency}
 
-                PROBLEMS:
-                - ...
+            ----------------------------------------
+            VERY IMPORTANT:
+            Use EXACT section headers:
 
-                INSIGHTS:
-                - ...
-
-                RECOMMENDATIONS:
-                - ...
-
-                ADVICE:
-                - ...
+            PROBLEM:
+            INSIGHTS:
+            RECOMMENDATIONS:
+            ADVICE:
                 """
 
                 try:
