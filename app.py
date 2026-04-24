@@ -472,7 +472,7 @@ elif page == "📊 Dashboard":
         # --------------------------------------
         # SMART INSIGHTS ENGINE
         # --------------------------------------
-        st.markdown("## 🧠 Smart Learning Insights")
+        st.markdown("## 🧠  Learning Insights")
 
         def insight_box(text, color):
             st.markdown(f"""
@@ -905,7 +905,7 @@ elif page == "📊 Dashboard":
         # --------------------------------------
         # AI SUMMARY
         # --------------------------------------
-        st.markdown("### 🧠 AI Executive Summary")
+        st.markdown("### 🧠 Executive Summary")
 
         if current_score > 70:
             st.error("""
